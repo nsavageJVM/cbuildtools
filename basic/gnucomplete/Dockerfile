@@ -1,7 +1,8 @@
 FROM gcc:4.9
 
+RUN apt-get update && apt-get install -y vim
+
 COPY src/ /src/
-COPY include/ /include/
 
 WORKDIR /src
 

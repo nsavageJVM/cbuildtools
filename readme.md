@@ -28,4 +28,4 @@
 - docker run -t -i -v "path to src directory":/mnt/share  eduonix/ctoolsgnu:1.0.0
 
 #### WARNING 
-- make sure you unmount the attached directory as it will delete the "path to src directory"/* if you delete the container with <path to src directory> still mounted
+- make sure you unmount the attmakeached directory as it will delete the "path to src directory"/* if you delete the container with "path to src directory" still mounted

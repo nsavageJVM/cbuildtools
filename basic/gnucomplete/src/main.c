@@ -1,13 +1,8 @@
-#include "server.h"
+#include <unistd.h>
 
-int main(int argc, char *argv[])
-{
-    server_t server;
+void runProcess();
 
-    if (server_init(&server, 80) < 0) {
-        return -1;
-    }
-
-    return server_run(&server);
+void main() {
+    runProcess();
 }
 

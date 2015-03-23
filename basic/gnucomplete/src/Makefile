@@ -1,5 +1,9 @@
-SRCS=$(wildcard *.c)
+CC=gcc
 
-OBJS=$(SRCS:.c=.o)
+CFLAGS=-Wall
 
-all: $(OBJS)
+simplemake: process.c main.c
+    gcc   -o myApp main.c process.c
+
+clean:
+	rm -f myApp *.o
