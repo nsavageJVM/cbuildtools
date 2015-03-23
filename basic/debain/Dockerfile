@@ -1,8 +1,9 @@
 FROM debian:jessie
 
-RUN apt-get update && apt-get install -y \
-    gcc \
-    build-essential
+# Never ask for confirmations
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y vim openjdk-7-jdk build-essential
 
 COPY src/ /src/
 

@@ -45,9 +45,9 @@ RUN echo "y" | android update sdk --no-ui --force --filter platform-tools,androi
 
 
 
-COPY eduonix/ /eduonix/
+COPY com.eduonix/ /com.eduonix/
 
-WORKDIR /eduonix
+WORKDIR /com.eduonix
 
 CMD ["bash"]
 

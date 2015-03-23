@@ -14,7 +14,7 @@ public class NDKDevPhaseTwo {
 
         NDKDevPhaseTwo runner = new NDKDevPhaseTwo();
 
-        runner.printLog("NDKDevPhaseTwo calls back");
+        runner.printLog("NDKDevPhaseTwo calls back\n\n");
 
     }
 
