@@ -4,51 +4,53 @@ FROM debian:jessie
 ENV DEBIAN_FRONTEND noninteractive
 
 
-RUN dpkg --add-architecture i386
+RUN apt-get update && apt-get install -y \
+    automake \
+    build-essential \
+    wget \
+    p7zip-full \
+    bash \
+    curl
 
-RUN apt-get update -qq && apt-get clean
 
-RUN apt-get -y install libc6:i386 libncurses5:i386 libstdc++6:i386
+RUN mkdir /TargetOS
 
-RUN apt-get -y install python-software-properties bzip2 wget openjdk-7-jdk build-essential vim
+RUN cd TargetOS && wget http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz
+RUN cd TargetOS &&  wget http://dl.google.com/android/ndk/android-ndk-r10c-linux-x86.bin
 
+RUN cd TargetOS &&  tar -xvzf android-sdk_r24.0.2-linux.tgz && \
+ chmod a+x android-ndk-r10c-linux-x86.bin && \
+ 7z x android-ndk-r10c-linux-x86.bin
 
-# Install android sdk
-RUN wget http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz && \
-    tar xf android-sdk_r24.0.2-linux.tgz && \
-    mv android-sdk-linux /usr/local/android-sdk && \
-    rm android-sdk_r24.0.2-linux.tgz
-
-# Install android ndk
-RUN wget http://dl.google.com/android/ndk/android-ndk64-r10-linux-x86_64.tar.bz2 && \
-    tar -xvjf android-ndk64-r10-linux-x86_64.tar.bz2 && \
-    mv android-ndk-r10 /usr/local/android-ndk && \
-    rm android-ndk64-r10-linux-x86_64.tar.bz2
-
-# Install apache ant
-RUN wget http://mirrors.ircam.fr/pub/apache//ant/binaries/apache-ant-1.9.4-bin.tar.gz && \
-    tar -xvzf apache-ant-1.9.4-bin.tar.gz && \
-    mv apache-ant-1.9.4 /usr/local/apache-ant && \
-    rm apache-ant-1.9.4-bin.tar.gz
-
-# Add android tools and platform tools to PATH
-ENV ANDROID_HOME /usr/local/android-sdk
+ENV ANDROID_HOME /TargetOS/android-sdk-linux
+ENV NDK_ROOT /TargetOS/android-ndk-r10c
 ENV PATH $PATH:$ANDROID_HOME/tools
 ENV PATH $PATH:$ANDROID_HOME/platform-tools
 
-# Add ant to PATH
-ENV ANT_HOME /usr/local/apache-ant
-ENV PATH $PATH:$ANT_HOME/bin
+RUN  cd /TargetOS && mkdir=/TargetOS/toolchain-arm && bash /TargetOS/android-ndk-r10c/build/tools/make-standalone-toolchain.sh --verbose --platform=android-21 --install-dir=toolchain-arm --arch=arm --toolchain=arm-linux-androideabi-4.9 --system=linux-x86
 
-# Install latest android (19 / 4.4.2) tools and system image.
-RUN echo "y" | android update sdk --no-ui --force --filter platform-tools,android-21,build-tools-21.1.0
+ENV TOOLCHAIN /TargetOS/toolchain-arm
+ENV SYSROOT $TOOLCHAIN/sysroot
+ENV PATH $PATH:$TOOLCHAIN/bin:$SYSROOT/usr/local/bin
 
+ENV ARCH armv7
 
+ENV CROSS_COMPILE arm-linux-androideabi
+ENV CC arm-linux-androideabi-gcc
+ENV CXX arm-linux-androideabi-g++
+ENV AR arm-linux-androideabi-ar
+ENV AS arm-linux-androideabi-as
+ENV LD arm-linux-androideabi-ld
+ENV RANLIB arm-linux-androideabi-ranlib
+ENV NM arm-linux-androideabi-nm
+ENV STRIP arm-linux-androideabi-strip
+ENV CHOST arm-linux-androideabi
 
-COPY com.eduonix/ /com.eduonix/
+COPY eduonix/ /eduonix/
 
-WORKDIR /com.eduonix
+WORKDIR /eduonix
 
 CMD ["bash"]
+
 
 
